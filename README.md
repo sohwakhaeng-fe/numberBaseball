@@ -1,4 +1,4 @@
-## 숫자야구게임
+# 숫자야구게임
 
 숫자야구게임을 React로 구현하며 React를 이해해보자.
 
@@ -32,4 +32,3 @@
 ## 페어 현황
 
 <img src="./public/pair현황.png" width="180" height="250">
-# numberBaseball
