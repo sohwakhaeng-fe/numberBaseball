@@ -1,6 +1,17 @@
 import "./App.css";
+import { useState } from "react";
 
 function App() {
+  const [number, setNumber] = useState();
+
+  const handleChange = ({ target: { value } }) => {
+    setNumber(value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <div id="app">
       <h1>⚾ 숫자 야구 게임</h1>
@@ -10,8 +21,8 @@ function App() {
         올바른 예) 139 <br />
         틀린 예) 122
       </p>
-      <form>
-        <input type="text" id="user-input" />
+      <form onSubmit={handleSubmit}>
+        <input type="text" id="user-input" onChange={handleChange} value={number} />
         <button id="submit">확인</button>
       </form>
       <h3>📄 결과</h3>
