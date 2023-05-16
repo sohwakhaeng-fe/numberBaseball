@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import { MIN, NUM_LENGTH } from "./constants/initValue";
+import { NUM_LENGTH } from "./constants/initValue";
 
 type InputFormProps = {
   isGameSuccess: boolean;

@@ -19,7 +19,7 @@ function App() {
     e.preventDefault();
 
     if (!userInput.current) return;
-    if (!isValidInputNumber(userInput.current?.value)) return;
+    if (!isValidInputNumber(userInput.current.value)) return;
 
     const userNumberArray = convertStringToNumberElementArray(
       userInput.current.value
@@ -39,7 +39,6 @@ function App() {
       userInput.current.value = "";
     }
 
-    setComputerNumberArray([]);
     setComputerNumberArray(generateComputerNumber());
     setResultText("");
     setIsGameSuccess(false);
