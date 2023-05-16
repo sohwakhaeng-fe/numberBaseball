@@ -6,3 +6,12 @@ body {
   display: grid;
   place-items: center;
 }
+
+#user-input {
+  width: 150px;
+}
+
+#result {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
