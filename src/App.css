@@ -6,7 +6,42 @@ body {
   height: 100%;
   font-family: 'Noto Sans KR', sans-serif;
 }
+
 #app {
   max-width: 400px;
   margin: 0 auto;
+}
+
+#user-input {
+  width: 240px;
+  padding: 7px;
+  border: none;
+  border-radius: 10px;
+  background-color: #FFF8D6;
+  &:hover {
+    background-color:#F7E1AE; 
+  }
+}
+
+.button {
+  padding: 5px;
+  margin-left: 10px;
+  border: 1px solid;
+  border-radius: 10px;
+  background: none;
+}
+
+#result-wrapper{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 300px;
+}
+
+#result {
+  width: 258px;
+  height: 30px;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #A4D0A4;
 }

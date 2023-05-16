@@ -1,15 +1,66 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useRef } from "react";
+
+const getAnswerNumbers = () => {
+  const answerNumbers = [];
+  while (answerNumbers.length < 3) {
+    // eslint-disable-next-line
+    const randomNumber = MissionUtils.Random.pickNumberInRange(1, 9);
+    if (!answerNumbers.includes(randomNumber)) {
+      answerNumbers.push(randomNumber);
+    }
+  }
+  return answerNumbers;
+};
 
 function App() {
-  const [number, setNumber] = useState();
+  const [value, setValue] = useState();
+  const [answer, setAnswer] = useState(getAnswerNumbers());
+  const [result, setResult] = useState("");
+  const [count, setCount] = useState({ strike: 0, ball: 0, });
+  const inputRef = useRef(null);
 
-  const handleChange = ({ target: { value } }) => {
-    setNumber(value);
+  const handleChangeInput = ( { target: { value } } ) => {
+    setValue(value);
   };
 
+  // 결과계산
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    console.log(`computer: ${answer} `);
+    console.log(`answer: ${answer.join("")} | input: ${value}`);
+
+    if (answer.join("") === value) {
+      setResult("정답입니다!");
+    } else {
+      const answerArr = value.split("").map((v) => parseInt(v));
+      for (let i = 0; i < 3; i++) {
+        if (answerArr[i] === answer[i]) {
+          console.log("strike", answerArr[i], answer[i]);
+          setCount(count.strike++);
+        } else if (answer.includes(answerArr[i])) {
+          console.log("ball", answerArr[i], answer.indexOf(answerArr[i]));
+          setCount(count.ball++);
+        }
+      }
+      setResult(`${count.ball}볼, ${count.strike}스트라이크`);
+      setValue("");
+      setCount({ strike: 0, ball: 0 });
+      if(count.strike === 0 && count.ball === 0) {
+      setResult("낫싱");
+      }
+      
+      inputRef.current.focus();
+    }
+  };
+
+  const resetGame = () => {
+    setResult("");
+    setValue("");
+    setAnswer(getAnswerNumbers());
+    inputRef.current.focus();
+    setCount({ strike: 0, ball: 0 });
   };
 
   return (
@@ -22,12 +73,28 @@ function App() {
         틀린 예) 122
       </p>
       <form onSubmit={handleSubmit}>
-        <input type="text" id="user-input" onChange={handleChange} value={number} />
-        <button id="submit">확인</button>
+        <input
+          type="text"
+          id="user-input"
+          onChange={handleChangeInput}
+          value={value}
+          ref={inputRef}
+        />
+        <button id="submit" className="button">
+          확인
+        </button>
       </form>
-      <h3>📄 결과</h3>
-      <div id="result">1볼 1스트라이크</div>
-      <button id="game-restart-button">재시작</button>
+      <div id="result-wrapper">
+        <h3>📄 결과</h3>
+        {result === "정답입니다!" ? (
+          <button className="button" onClick={resetGame}>
+            재시작
+          </button>
+        ) : (
+          <></>
+        )}
+      </div>
+      <div id="result">{result}</div>
     </div>
   );
 }
