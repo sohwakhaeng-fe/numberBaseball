@@ -1,24 +1,29 @@
 import { useState } from "react";
 import "./App.css";
+import PlayerForm from "./components/PlayerForm";
+
+ // 1. 2명의 플레이어가 함께 한다.
+  // 2. 서로 랜덤의 숫자를 지정한다.
+  // 3. 한 턴에 한번 숫자를 입력할 수 있다.
+  // 4. 먼저 맞추는 쪽이 승리한다.
+  // 5. 만약 먼저 시작한 쪽이 정답을 맞추면 상대방한테도 기회가 주어지고, 상대방도 맞추면 무승부
 
 function App() {
 
   const [number, setNumber] = useState("");
 
-  const [resultList, setResultList] = useState([])
-  // 번호 생성
-  const createNumber = () => {
-    let numberArr = []
-    while (numberArr.length < 3) {
-      const num = Math.floor(Math.random() * 9 + 1)
-      if (!numberArr.includes(num)){
-        numberArr.push(num)
-      }
-    }
-    return numberArr.join("")
-  }
+  const [isNext, setIsNext] = useState(false);
 
-  const [randomNumber, setRandomNumber] = useState(createNumber())
+  const [numbers, setNumbers] = useState([
+    [],[]
+  ]); 
+  
+  // [],[] : 첫 번째[]: 맞춰야하는값 배열, 두번째 [] : input에서 맞춰지는 값 배열
+  // numbers[1][0] => red가 맞춰야 하는 값
+  // numbers[0][0] => blue가 맞춰야 하는 값
+
+  const [resultList, setResultList] = useState([])
+
   // 결과 텍스트 변환
   const resultToText = (result) => {
     let resultText = ""
@@ -57,22 +62,44 @@ function App() {
   // 재시작
   const reset = () => {
     setNumber("");
-    setRandomNumber(createNumber())
     setResultList([])
   }
-  // 숫자 맞추기
-  const handleSubmit = e => {
-    e.preventDefault()
-    if (!checkValue(number)) return
-    
+
+  const handleSubmit = (player, $event) => {
+      $event.preventDefault()
+      const value = $event.target[0].value;
+      if (!checkValue(value)) return
+      
+      // 정답 입력하는 거
+      const index = player === 'red' ? 0 : 1
+
+      if (numbers[0].length !== 0 && numbers[1].length !== 0){
+        matchNumber(numbers, player, value)
+      }
+
+      setNumbers(prev => {
+        let newNumbers = [...prev];
+        newNumbers[index].push(value)
+        console.log(newNumbers);
+        return newNumbers;
+      })
+
+      
+  }
+
+  const matchNumber = (numbers, player, value) => {
+    const answer = numbers[player === "red" ? 1 : 0 ][0];
+
+    console.log(answer);
+
     const result = {
       strike: 0,
       ball: 0
     }
     let i = 0;
-    for (const n of number) {
+    for (const n of value) {
       
-      const index = randomNumber.indexOf(n)
+      const index = answer.indexOf(n)
       if (index >= 0 && index === i) {
         result["strike"] += 1
       } else if (index >= 0) {
@@ -82,17 +109,42 @@ function App() {
     }
 
     console.log(result);
-
-    const resultText = resultToText(result)
     
-    setResultList(prev => [
-      ...prev,
-      resultText
-    ])
-    
-    console.log(randomNumber);
-    console.log(result);
   }
+
+  //  숫자 맞추기
+  // const handleSubmit = e => {
+  //   e.preventDefault()
+  //   if (!checkValue(number)) return
+    
+  //   const result = {
+  //     strike: 0,
+  //     ball: 0
+  //   }
+  //   let i = 0;
+  //   for (const n of number) {
+      
+  //     const index = randomNumber.indexOf(n)
+  //     if (index >= 0 && index === i) {
+  //       result["strike"] += 1
+  //     } else if (index >= 0) {
+  //       result["ball"] += 1
+  //     }
+  //     i++;
+  //   }
+
+  //   console.log(result);
+
+  //   const resultText = resultToText(result)
+    
+  //   setResultList(prev => [
+  //     ...prev,
+  //     resultText
+  //   ])
+    
+  //   console.log(randomNumber);
+  //   console.log(result);
+  // }
   return (
     <div id="app">
       <h1>⚾ 숫자 야구 게임</h1>
@@ -102,10 +154,14 @@ function App() {
         올바른 예) 139 <br />
         틀린 예) 122
       </p>
-      <form onSubmit={handleSubmit}>
+      <div style={{display: "flex"}}>
+        <PlayerForm player='red' onSubmit={handleSubmit} />
+        <PlayerForm player='blue' onSubmit={handleSubmit} />
+      </div>
+      {/* <form onSubmit={handleSubmit}></form>
         <input readOnly={resultList[resultList.length - 1] === "3 스트라이크"} type="text" id="user-input" value={number} onChange={e => setNumber(e.target.value)}/>
         <button id="submit" onClick={handleSubmit}>확인</button>
-      </form>
+      </form> */}
       <h3>📄 결과</h3>
       {resultList.map((result, index) => {
         if (result === '3 스트라이크') return <div key={index}>정답 입니다!</div>
